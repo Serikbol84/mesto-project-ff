@@ -22,9 +22,7 @@ const createCard = (name, link, deleteCard) => {
     cardImage.alt = name;
     cardTitle.textContent = name;
 
-    deleteButton.addEventListener('click', () => {
-        deleteCard(cardElement);
-    });
+    deleteButton.addEventListener('click', () => deleteCard(cardElement));
 
     return cardElement;
 }
