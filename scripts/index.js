@@ -8,24 +8,23 @@
 
 // @todo: Вывести карточки на страницу
 
-
-
 const cardTemplate = document.querySelector('#card-template').content;
-const cardList = document.querySelector('.places__list');
+const cardsContainer = document.querySelector('.places__list');
 
-const createCard = (name, link) => {
+const createCard = (name, link, deleteCard) => {
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
 
-    cardElement.querySelector('.card__image').src = link;
-    cardElement.querySelector('.card__title').textContent = name;
-
+    const cardImage = cardElement.querySelector('.card__image');
+    const cardTitle = cardElement.querySelector('.card__title');
     const deleteButton = cardElement.querySelector('.card__delete-button');
+
+    cardImage.src = link;
+    cardImage.alt = name;
+    cardTitle.textContent = name;
 
     deleteButton.addEventListener('click', () => {
         deleteCard(cardElement);
     });
-
-    // cardList.append(cardElement); так тоже работало, но по заданию вывод карточки на страницу в конце (по карйней мере я так понял задание)
 
     return cardElement;
 }
@@ -34,7 +33,6 @@ const deleteCard = (cardElement) => {
     cardElement.remove();
 }
 
-const cardsElements = initialCards.map(initialCard => createCard(initialCard.name, initialCard.link));
+const cardsElements = initialCards.map(initialCard => createCard(initialCard.name, initialCard.link, deleteCard));
 
-
-cardList.append(...cardsElements);
+cardsContainer.append(...cardsElements);
