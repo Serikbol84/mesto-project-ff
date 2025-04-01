@@ -9,6 +9,7 @@
 // @todo: Вывести карточки на страницу
 
 
+
 const cardTemplate = document.querySelector('#card-template').content;
 const cardList = document.querySelector('.places__list');
 
