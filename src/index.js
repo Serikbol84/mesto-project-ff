@@ -1,5 +1,5 @@
-import { initialCards } from '../scripts/cards.js';
-import '../pages/index.css';
+import { initialCards } from './scripts/cards.js';
+import './pages/index.css';
 
 
 const cardTemplate = document.querySelector('#card-template').content;
