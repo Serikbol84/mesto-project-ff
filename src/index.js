@@ -1,12 +1,6 @@
-// @todo: Темплейт карточки
+import { initialCards } from '../scripts/cards.js';
+import '../pages/index.css';
 
-// @todo: DOM узлы
-
-// @todo: Функция создания карточки
-
-// @todo: Функция удаления карточки
-
-// @todo: Вывести карточки на страницу
 
 const cardTemplate = document.querySelector('#card-template').content;
 const cardsContainer = document.querySelector('.places__list');
@@ -34,3 +28,7 @@ const deleteCard = (cardElement) => {
 const cardsElements = initialCards.map(initialCard => createCard(initialCard.name, initialCard.link, deleteCard));
 
 cardsContainer.append(...cardsElements);
+
+
+
+
