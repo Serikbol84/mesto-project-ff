@@ -1,6 +1,6 @@
 import { initialCards } from './scripts/cards.js';
-import { createCard, deleteCard, cardLike } from './blocks/components/card.js';
-import { openModal, closeModal, openImagePopup } from './blocks/components/modal.js';
+import { createCard, deleteCard, cardLike } from './components/card.js';
+import { openModal, closeModal } from './components/modal.js';
 import './pages/index.css';
 
 
@@ -15,9 +15,9 @@ const popupNewCard = document.querySelector('.popup_type_new-card');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
-const formElement = document.querySelector('.popup_type_edit .popup__form');
-const nameInput = formElement.querySelector('.popup__input_type_name');
-const jobInput = formElement.querySelector('.popup__input_type_description');
+const profileFormElement = document.querySelector('.popup_type_edit .popup__form');
+const nameInput = profileFormElement.querySelector('.popup__input_type_name');
+const jobInput = profileFormElement.querySelector('.popup__input_type_description');
 
 const newPlaceForm = document.querySelector('.popup_type_new-card .popup__form');
 const placeNameInput = newPlaceForm.querySelector('.popup__input_type_card-name');
@@ -54,7 +54,7 @@ popups.forEach((popup) => {
 
 // ================== Редактирование профиля ================================
 
-function handleFormSubmit(evt) {
+function handleProfileFormSubmit(evt) {
   evt.preventDefault(); 
 
   const name = nameInput.value;
@@ -66,7 +66,7 @@ function handleFormSubmit(evt) {
   closeModal(popupEdit);
 }
 
-formElement.addEventListener('submit', handleFormSubmit);
+profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 
 
 // ================ Добавление карточки ===========================
@@ -87,6 +87,20 @@ function addCard(evt) {
 }
 
 newPlaceForm.addEventListener('submit', addCard);
+
+//================== Обработчик открытия попапа с изображением ========================================
+
+function openImagePopup(name, link) {
+  const popup = document.querySelector('.popup_type_image');
+  const popupImage = popup.querySelector('.popup__image');
+  const popupCaption = popup.querySelector('.popup__caption');
+
+  popupImage.src = link;
+  popupImage.alt = name;
+  popupCaption.textContent = name;
+
+  openModal(popup);
+}
 
 //==========================================================
 
