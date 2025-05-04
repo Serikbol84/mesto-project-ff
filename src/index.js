@@ -3,26 +3,38 @@ import { createCard, deleteCard, cardLike } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
 import './pages/index.css';
 
+//======================== DOM-элементы: кнопки и попапы ==========================================
 
 const profileEditButton = document.querySelector('.profile__edit-button');
 const addCardButton = document.querySelector('.profile__add-button');
 const closeButtons = document.querySelectorAll('.popup__close');
 const popups = document.querySelectorAll('.popup');
 
+// -------------------- Попапы ---------------
 const popupEdit = document.querySelector('.popup_type_edit');
 const popupNewCard = document.querySelector('.popup_type_new-card');
+const popup = document.querySelector('.popup_type_image');
 
+// -------------------- Элементы профиля ---------------
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
+// -------------------- Форма редактирования профиля ---------------
 const profileFormElement = document.querySelector('.popup_type_edit .popup__form');
 const nameInput = profileFormElement.querySelector('.popup__input_type_name');
 const jobInput = profileFormElement.querySelector('.popup__input_type_description');
 
+// -------------------- Форма добавления новых карточек ---------------
 const newPlaceForm = document.querySelector('.popup_type_new-card .popup__form');
 const placeNameInput = newPlaceForm.querySelector('.popup__input_type_card-name');
 const linkInput = newPlaceForm.querySelector('.popup__input_type_url');
 
+// -------------------- переменные обработчика открытия большого изображения ---------------
+
+const popupImage = popup.querySelector('.popup__image');
+const popupCaption = popup.querySelector('.popup__caption');
+
+// -------------------- Контейнер для карточек ---------------
 const cardsContainer = document.querySelector('.places__list');
 
 
@@ -88,12 +100,9 @@ function addCard(evt) {
 
 newPlaceForm.addEventListener('submit', addCard);
 
-//================== Обработчик открытия попапа с изображением ========================================
+//================== Обработчик открытия попапа большлго изображения ========================================
 
 function openImagePopup(name, link) {
-  const popup = document.querySelector('.popup_type_image');
-  const popupImage = popup.querySelector('.popup__image');
-  const popupCaption = popup.querySelector('.popup__caption');
 
   popupImage.src = link;
   popupImage.alt = name;
