@@ -29,7 +29,7 @@ const newPlaceForm = document.querySelector('.popup_type_new-card .popup__form')
 const placeNameInput = newPlaceForm.querySelector('.popup__input_type_card-name');
 const linkInput = newPlaceForm.querySelector('.popup__input_type_url');
 
-// -------------------- переменные обработчика открытия большого изображения ---------------
+// -------------------- Элементы попапа открытия большого изображения ---------------
 
 const popupImage = popup.querySelector('.popup__image');
 const popupCaption = popup.querySelector('.popup__caption');
