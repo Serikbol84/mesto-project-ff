@@ -1,6 +1,7 @@
 import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, cardLike } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
+import { enableValidation, clearValidation } from './components/validation.js';
 import './pages/index.css';
 
 //======================== DOM-элементы: кнопки и попапы ==========================================
@@ -40,13 +41,10 @@ const cardsContainer = document.querySelector('.places__list');
 
 // ================== Обработка открытия, закрытия попапов ================================
 
-profileEditButton.addEventListener('click', () => {
-  nameInput.value = profileTitle.textContent;
-  jobInput.value = profileDescription.textContent;
-  openModal(popupEdit);
-});
+profileEditButton.addEventListener('click', openEditProfilePopup);
 
-addCardButton.addEventListener('click', () => openModal(popupNewCard));
+addCardButton.addEventListener('click', openNewPlacePopup);
+
 
 closeButtons.forEach((button) => {
   const popup = button.closest('.popup');
@@ -117,3 +115,27 @@ const cardsElements = initialCards.map(initialCard => createCard(initialCard.nam
 
 cardsContainer.append(...cardsElements);
 
+//============================================================================================
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
+
+function openEditProfilePopup() {
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileDescription.textContent;
+  clearValidation(profileFormElement, validationConfig);
+  openModal(popupEdit);
+}
+
+function openNewPlacePopup() {
+  newPlaceForm.reset();
+  clearValidation(newPlaceForm, validationConfig);
+  openModal(popupNewCard);
+}
+
+enableValidation(validationConfig);
