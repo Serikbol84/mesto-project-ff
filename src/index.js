@@ -1,8 +1,19 @@
-import { initialCards } from './scripts/cards.js';
-import { createCard, deleteCard, cardLike } from './components/card.js';
+
+import { createCard } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
 import './pages/index.css';
+
+import {   
+  getUserInfo,
+  updateUserInfo,
+  getInitialCards,
+  addCard,
+  updateAvatar,
+  apiDeleteCard,
+  likeCard,
+  unlikeCard    
+} from './components/api.js';
 
 //======================== DOM-элементы: кнопки и попапы ==========================================
 
@@ -35,9 +46,36 @@ const linkInput = newPlaceForm.querySelector('.popup__input_type_url');
 const popupImage = popup.querySelector('.popup__image');
 const popupCaption = popup.querySelector('.popup__caption');
 
+//--------------------- Форма аватара -----------------------------
+
+const popupEditAvatar = document.querySelector('.popup_type_edit-avatar');
+const formEditAvatar = document.forms['edit-avatar'];
+const avatarInput = formEditAvatar.elements.avatar;
+const profileAvatar = document.querySelector('.profile__image');
+
 // -------------------- Контейнер для карточек ---------------
 const cardsContainer = document.querySelector('.places__list');
 
+
+
+// ================== Получеие данных с API ========================================
+let userId;
+
+Promise.all([getUserInfo(), getInitialCards()])
+  .then(([userData, cardList]) => {
+    userId = userData._id;
+
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+
+    const cardsElements = cardList.map(card => 
+      createCard(card, userId, handleDeleteCard, handleLikeCard, openImagePopup)
+    );
+    cardsContainer.append(...cardsElements);
+  })
+
+.catch((err) => console.error('Ошибка при загрузке данных: ', err));
 
 // ================== Обработка открытия, закрытия попапов ================================
 
@@ -67,13 +105,23 @@ popups.forEach((popup) => {
 function handleProfileFormSubmit(evt) {
   evt.preventDefault(); 
 
-  const name = nameInput.value;
-  const description = jobInput.value;
+  const saveButton = evt.submitter;
+  const originalText = saveButton.textContent;
+  
+  saveButton.textContent = 'Сохранение...';
 
-  profileTitle.textContent = name;
-  profileDescription.textContent = description;
+  updateUserInfo(nameInput.value, jobInput.value  )
+  .then((userData) => {
+    profileTitle.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    closeModal(popupEdit);
+  })
 
-  closeModal(popupEdit);
+  .catch((err) => console.error('Ошибка при обновлении профиля: ', err))
+  .finally(() => {
+    saveButton.disabled = false;
+    saveButton.textContent = originalText;
+  });
 }
 
 profileFormElement.addEventListener('submit', handleProfileFormSubmit);
@@ -81,27 +129,60 @@ profileFormElement.addEventListener('submit', handleProfileFormSubmit);
 
 // ================ Добавление карточки ===========================
 
-function addCard(evt) {
+function handleAddCardSubmit(evt) {
   evt.preventDefault();
+  const saveButton = evt.submitter;
+  const originalText = saveButton.textContent;
+  
+  saveButton.textContent = 'Создание...';
 
-  const newCard = {
-    name:placeNameInput.value,
-    link:linkInput.value
-  };
 
-  const cardElement = createCard(newCard.name, newCard.link, deleteCard, cardLike, openImagePopup);
-  cardsContainer.prepend(cardElement);
-
-  newPlaceForm.reset();
-  closeModal(popupNewCard);
+  addCard(placeNameInput.value, linkInput.value)
+    .then((cardData) => {
+      const cardElement = createCard(
+        cardData,
+        userId,
+        handleDeleteCard,
+        handleLikeCard,
+        openImagePopup
+      );
+      cardsContainer.prepend(cardElement);
+      newPlaceForm.reset();
+      closeModal(popupNewCard);
+    })
+    .catch((err) => console.error('Ошибка при добавлении карточки: ', err))
+    .finally(() => {
+      saveButton.disabled = false;
+      saveButton.textContent = originalText;
+    });
 }
 
-newPlaceForm.addEventListener('submit', addCard);
+newPlaceForm.addEventListener('submit', handleAddCardSubmit);
+
+//=================== Удаление карточки ========================================
+
+const handleDeleteCard = (cardId, cardElement) => {
+  apiDeleteCard(cardId)
+    .then(() => cardElement.remove())
+    .catch((err) => console.error('Ошибка при удалении карточки: ', err))
+};
+
+//=================== Лайк карточки ========================================
+const handleLikeCard = (cardId, likeButton, likeCountElement) => {
+  const isLiked = likeButton.classList.contains('card__like-button_is-active');
+  const apiCall = isLiked ? unlikeCard(cardId) : likeCard(cardId);
+  
+  apiCall
+    .then((updatedCard) => {
+      likeButton.classList.toggle('card__like-button_is-active');
+      likeCountElement.textContent = updatedCard.likes.length;
+    })
+    .catch((err) => console.error('Ошибка при лайке карточки: ', err))
+};
 
 //================== Обработчик открытия попапа большлго изображения ========================================
 
 function openImagePopup(name, link) {
-
   popupImage.src = link;
   popupImage.alt = name;
   popupCaption.textContent = name;
@@ -109,11 +190,29 @@ function openImagePopup(name, link) {
   openModal(popup);
 }
 
-//==========================================================
+// ================== Обработчик аватара =================================
 
-const cardsElements = initialCards.map(initialCard => createCard(initialCard.name, initialCard.link, deleteCard, cardLike, openImagePopup));
+profileAvatar.addEventListener('click', () => {
+  clearValidation(formEditAvatar, validationConfig);
+  openModal(popupEditAvatar);
+});
 
-cardsContainer.append(...cardsElements);
+formEditAvatar.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  const saveButton = evt.submitter;
+  
+  saveButton.textContent = 'Сохранение...';
+  updateAvatar(avatarInput.value)
+    .then((userData) => {
+      profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+      closeModal(popupEditAvatar);
+    })
+    .catch(console.error)
+    .finally(() => {
+      saveButton.textContent = 'Сохранить';
+    });
+});
 
 //============================================================================================
 const validationConfig = {
@@ -139,3 +238,8 @@ function openNewPlacePopup() {
 }
 
 enableValidation(validationConfig);
+
+
+
+
+

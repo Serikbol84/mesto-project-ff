@@ -11,7 +11,7 @@
 <body class="page">
 <div class="page__content">
   <header class="header page__section">
-    <img src="<%=require('./images/logo.svg')%>" alt="Логотип проекта масто" class="logo header__logo">
+    <img src="<%=require('./images/logo.svg')%>" alt="Логотип проекта место" class="logo header__logo">
   </header>
   <main class="content">
     <section class="profile page__section">
@@ -94,10 +94,28 @@
           class="popup__input popup__input_type_url" 
           placeholder="Ссылка на картинку" 
           required
-          pattern="https?://[^\s]+"
           data-error-message="Введите адрес сайта"
         >
         <span class="popup__error" id="link-input-error"></span>
+        <button type="submit" class="button popup__button">Сохранить</button>
+      </form>
+    </div>
+  </div>
+  <div class="popup popup_type_edit-avatar">
+    <div class="popup__content">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="edit-avatar">
+        <input
+          type="url"
+          name="avatar"
+          id="avatar-input"
+          class="popup__input popup__input_type_avatar-url"
+          placeholder="Ссылка на аватар"
+          required
+          data-error-message="Введите корректный URL изображения"
+        >
+        <span class="popup__error" id="avatar-input-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
@@ -117,9 +135,11 @@
     <img class="card__image" src="" alt="" />
     <button type="button" class="card__delete-button"></button>
     <div class="card__description">
-      <h2 class="card__title">
-      </h2>
-      <button type="button" class="card__like-button"></button>
+      <h2 class="card__title"></h2>
+      <div class="like">
+        <button type="button" class="card__like-button"></button>
+        <span class="number-of-likes"></span>
+      </div>
     </div>
   </li>
 </template>
