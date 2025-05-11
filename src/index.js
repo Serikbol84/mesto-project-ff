@@ -25,7 +25,7 @@ const popups = document.querySelectorAll('.popup');
 // -------------------- Попапы ---------------
 const popupEdit = document.querySelector('.popup_type_edit');
 const popupNewCard = document.querySelector('.popup_type_new-card');
-const popup = document.querySelector('.popup_type_image');
+const popupImageView  = document.querySelector('.popup_type_image');
 
 // -------------------- Элементы профиля ---------------
 const profileTitle = document.querySelector('.profile__title');
@@ -43,8 +43,8 @@ const linkInput = newPlaceForm.querySelector('.popup__input_type_url');
 
 // -------------------- Элементы попапа открытия большого изображения ---------------
 
-const popupImage = popup.querySelector('.popup__image');
-const popupCaption = popup.querySelector('.popup__caption');
+const popupImageElement = popupImageView .querySelector('.popup__image');
+const popupImageCaption = popupImageView .querySelector('.popup__caption');
 
 //--------------------- Форма аватара -----------------------------
 
@@ -85,18 +85,18 @@ addCardButton.addEventListener('click', openNewPlacePopup);
 
 
 closeButtons.forEach((button) => {
-  const popup = button.closest('.popup');
-  button.addEventListener('click', () => closeModal(popup));
+  const currentPopup = button.closest('.popup');
+  button.addEventListener('click', () => closeModal(currentPopup));
 });
 
-popups.forEach((popup) => {
+popups.forEach((currentPopup) => {
   popup.addEventListener('mousedown', (evt) => {
-    if (evt.target === popup) {
-      closeModal(popup);
+    if (evt.target === currentPopup) {
+      closeModal(currentPopup);
     }
   });
 
-  popup.classList.add('popup_is-animated');
+  currentPopup.classList.add('popup_is-animated');
 });
 
 
@@ -183,11 +183,11 @@ const handleLikeCard = (cardId, likeButton, likeCountElement) => {
 //================== Обработчик открытия попапа большлго изображения ========================================
 
 function openImagePopup(name, link) {
-  popupImage.src = link;
-  popupImage.alt = name;
-  popupCaption.textContent = name;
+  popupImageElement.src = link;
+  popupImageElement.alt = name;
+  popupImageCaption.textContent = name;
 
-  openModal(popup);
+  openModal(popupImageView );
 }
 
 // ================== Обработчик аватара =================================
