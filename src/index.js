@@ -1,5 +1,5 @@
 
-import { createCard } from './components/card.js';
+import { createCard, handleDeleteCard, handleLikeCard } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
 import { enableValidation, clearValidation } from './components/validation.js';
 import './pages/index.css';
@@ -9,10 +9,7 @@ import {
   updateUserInfo,
   getInitialCards,
   addCard,
-  updateAvatar,
-  apiDeleteCard,
-  likeCard,
-  unlikeCard    
+  updateAvatar   
 } from './components/api.js';
 
 //======================== DOM-элементы: кнопки и попапы ==========================================
@@ -90,7 +87,7 @@ closeButtons.forEach((button) => {
 });
 
 popups.forEach((currentPopup) => {
-  popup.addEventListener('mousedown', (evt) => {
+  currentPopup.addEventListener('mousedown', (evt) => {
     if (evt.target === currentPopup) {
       closeModal(currentPopup);
     }
@@ -159,26 +156,6 @@ function handleAddCardSubmit(evt) {
 
 newPlaceForm.addEventListener('submit', handleAddCardSubmit);
 
-//=================== Удаление карточки ========================================
-
-const handleDeleteCard = (cardId, cardElement) => {
-  apiDeleteCard(cardId)
-    .then(() => cardElement.remove())
-    .catch((err) => console.error('Ошибка при удалении карточки: ', err))
-};
-
-//=================== Лайк карточки ========================================
-const handleLikeCard = (cardId, likeButton, likeCountElement) => {
-  const isLiked = likeButton.classList.contains('card__like-button_is-active');
-  const apiCall = isLiked ? unlikeCard(cardId) : likeCard(cardId);
-  
-  apiCall
-    .then((updatedCard) => {
-      likeButton.classList.toggle('card__like-button_is-active');
-      likeCountElement.textContent = updatedCard.likes.length;
-    })
-    .catch((err) => console.error('Ошибка при лайке карточки: ', err))
-};
 
 //================== Обработчик открытия попапа большлго изображения ========================================
 
